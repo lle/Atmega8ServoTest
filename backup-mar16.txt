@@ -1,0 +1,108 @@
+#define u08 unsigned char
+#define u16 unsigned int
+#define s08 char
+#define s16 int
+#define F_CPU 1000000 
+#define USART_BAUDRATE 9600 
+#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+
+#include <avr/io.h> 
+#include <avr/interrupt.h> 
+#include <util/delay.h>
+#include "servoControl.h"
+#include "debug.h"
+#include "calibration.h"
+#include "laser.h"
+
+static u16 minA=3000;		//Up Down	-	higher OCR = negative angle
+static u16 maxA=3800;
+static u16 minB=4300;		//Left Right	-	higher OCR = right
+static u16 maxB=5000;
+volatile u08 laserFlag=0;
+
+void transmitUSART(unsigned int data)
+{
+	UDR = data; // Send out the byte value in the variable "ByteToSend" 
+	while ((UCSRA & (1 << TXC)) == 0) {}; // Do nothing until transmission complete flag set
+	while ((UCSRA & (1 << UDRE)) == 0) {};
+}
+
+//Main Program
+int main (void) 
+{
+	//set pins
+	DDRB=0xFF;
+	DDRC=0b00111111;
+	//DDRD=0x00;	
+
+	//setPWM(minA,minB);
+	//setLaser();
+
+	//debug();
+	
+	
+	//set serial
+	UBRRL = BAUD_PRESCALE;
+	UBRRH = (BAUD_PRESCALE >> 8);
+	UCSRC = (1<<URSEL)|(1<<USBS)|(1<<UCSZ1)|(1<<UCSZ0);
+	UCSRB = (1<<TXEN);
+	//UCSRA = 0b00100000;
+	//UCSRB = 0b00011000;
+	//UCSRC = 0b10001110;
+	
+	while(1)
+	{
+		transmitUSART(66);
+	}
+	
+		
+	while(1)
+	{
+		//calibrate16();
+		testMaxA(minA, maxA);
+		testMaxB(minB, maxB);
+	}
+
+	while(1)
+	{
+		//Acticate Laser
+		if(!(PIND & (1<<PD4)))
+		{
+			PORTB |= _BV(PB3);
+			//laserFlag=1;
+		}
+		else
+		{	
+			PORTB &= ~_BV(PB3);
+			//laserFlag = 0;
+		}
+
+		//Set Servo 1
+		if(!(PIND & (1<<PD0)))
+		{
+			OCR1B++;
+			checkOCRb(minB, maxB);
+		}
+		else if(!(PIND & (1<<PD1)))
+		{
+			OCR1B--;
+			checkOCRb(minB, maxB);
+		}
+
+		//Set Servo 2
+		if(!(PIND & (1<<PD2)))
+		{
+			OCR1A++;
+			checkOCRa(minA, maxA);
+		}
+		else if(!(PIND & (1<<PD3)))
+		{
+			OCR1A--;
+			checkOCRa(minA, maxA);
+		}
+
+		_delay_ms(30);
+		PORTB &= ~_BV(PB3);	//turn off laser
+		_delay_ms(30);
+	}	
+}

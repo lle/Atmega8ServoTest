@@ -1,0 +1,1145 @@
+
+servotest.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000004ce  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000005  00800060  00800060  00000542  2**0
+                  ALLOC
+  2 .debug_aranges 00000020  00000000  00000000  00000542  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 00000118  00000000  00000000  00000562  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   0000099a  00000000  00000000  0000067a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 00000210  00000000  00000000  00001014  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   00000777  00000000  00000000  00001224  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000100  00000000  00000000  0000199c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    000001d9  00000000  00000000  00001a9c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_loc    0000040c  00000000  00000000  00001c75  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000168  00000000  00000000  00002081  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	ee c0       	rjmp	.+476    	; 0x1f0 <__vector_9>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a5 36       	cpi	r26, 0x65	; 101
+  3e:	b1 07       	cpc	r27, r17
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	d2 d1       	rcall	.+932    	; 0x3e8 <main>
+  44:	42 c2       	rjmp	.+1156   	; 0x4ca <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <setPWM>:
+void setPWM(int pwmA, int pwmB)
+{
+	//set pwm parameters 
+	TCCR1A = 0b10100010; //a2
+  48:	22 ea       	ldi	r18, 0xA2	; 162
+  4a:	2f bd       	out	0x2f, r18	; 47
+	TCCR1B = 0b00001100; //19
+  4c:	2c e0       	ldi	r18, 0x0C	; 12
+  4e:	2e bd       	out	0x2e, r18	; 46
+	int phaseDebug=0;
+	int max = 4000;
+	int min = 3500;
+	if(phaseCorr==1)
+	{
+		TCCR1A = (1 << COM1A1) | (1 << COM1B1);
+  50:	20 ea       	ldi	r18, 0xA0	; 160
+  52:	2f bd       	out	0x2f, r18	; 47
+		TCCR1B = (1 << WGM13) | (1 << CS10);
+  54:	21 e1       	ldi	r18, 0x11	; 17
+  56:	2e bd       	out	0x2e, r18	; 46
+		ICR1 = 40000; 
+  58:	20 e4       	ldi	r18, 0x40	; 64
+  5a:	3c e9       	ldi	r19, 0x9C	; 156
+  5c:	37 bd       	out	0x27, r19	; 39
+  5e:	26 bd       	out	0x26, r18	; 38
+				_delay_ms(10);
+			}	
+		}
+	}
+	
+	TCNT1 = 0; 
+  60:	1d bc       	out	0x2d, r1	; 45
+  62:	1c bc       	out	0x2c, r1	; 44
+	OCR1A = pwmA;//PWM Duty "optional"
+  64:	9b bd       	out	0x2b, r25	; 43
+  66:	8a bd       	out	0x2a, r24	; 42
+	OCR1B = pwmB;
+  68:	79 bd       	out	0x29, r23	; 41
+  6a:	68 bd       	out	0x28, r22	; 40
+}
+  6c:	08 95       	ret
+
+0000006e <checkOCRa>:
+
+
+void checkOCRa(int min, int max)
+{
+  6e:	ac 01       	movw	r20, r24
+	if(OCR1A>max)
+  70:	8a b5       	in	r24, 0x2a	; 42
+  72:	9b b5       	in	r25, 0x2b	; 43
+  74:	68 17       	cp	r22, r24
+  76:	79 07       	cpc	r23, r25
+  78:	18 f4       	brcc	.+6      	; 0x80 <checkOCRa+0x12>
+		OCR1A=max;
+  7a:	7b bd       	out	0x2b, r23	; 43
+  7c:	6a bd       	out	0x2a, r22	; 42
+  7e:	08 95       	ret
+	else if(OCR1A<min)
+  80:	8a b5       	in	r24, 0x2a	; 42
+  82:	9b b5       	in	r25, 0x2b	; 43
+  84:	84 17       	cp	r24, r20
+  86:	95 07       	cpc	r25, r21
+  88:	10 f4       	brcc	.+4      	; 0x8e <checkOCRa+0x20>
+		OCR1A=min;
+  8a:	5b bd       	out	0x2b, r21	; 43
+  8c:	4a bd       	out	0x2a, r20	; 42
+  8e:	08 95       	ret
+
+00000090 <checkOCRb>:
+	//outputOCR(OCR1A);
+}
+
+void checkOCRb(int min, int max)
+{
+  90:	ac 01       	movw	r20, r24
+	if(OCR1B>max)
+  92:	88 b5       	in	r24, 0x28	; 40
+  94:	99 b5       	in	r25, 0x29	; 41
+  96:	68 17       	cp	r22, r24
+  98:	79 07       	cpc	r23, r25
+  9a:	18 f4       	brcc	.+6      	; 0xa2 <checkOCRb+0x12>
+		OCR1B=max;
+  9c:	79 bd       	out	0x29, r23	; 41
+  9e:	68 bd       	out	0x28, r22	; 40
+  a0:	08 95       	ret
+	else if(OCR1B<min)
+  a2:	88 b5       	in	r24, 0x28	; 40
+  a4:	99 b5       	in	r25, 0x29	; 41
+  a6:	84 17       	cp	r24, r20
+  a8:	95 07       	cpc	r25, r21
+  aa:	10 f4       	brcc	.+4      	; 0xb0 <checkOCRb+0x20>
+		OCR1B=min;
+  ac:	59 bd       	out	0x29, r21	; 41
+  ae:	48 bd       	out	0x28, r20	; 40
+  b0:	08 95       	ret
+
+000000b2 <outputOCR>:
+	//outputOCR(OCR1B);
+}
+
+void outputOCR(unsigned char value)
+{
+	PORTC &= ~0b00111111;
+  b2:	25 b3       	in	r18, 0x15	; 21
+  b4:	20 7c       	andi	r18, 0xC0	; 192
+  b6:	25 bb       	out	0x15, r18	; 21
+	PORTB &= ~0b11000000;
+  b8:	28 b3       	in	r18, 0x18	; 24
+  ba:	2f 73       	andi	r18, 0x3F	; 63
+  bc:	28 bb       	out	0x18, r18	; 24
+	PORTC |= (value & 0b00111111);
+  be:	35 b3       	in	r19, 0x15	; 21
+  c0:	28 2f       	mov	r18, r24
+  c2:	2f 73       	andi	r18, 0x3F	; 63
+  c4:	23 2b       	or	r18, r19
+  c6:	25 bb       	out	0x15, r18	; 21
+	PORTB |= (value & 0b11000000)>>2;
+  c8:	28 b3       	in	r18, 0x18	; 24
+  ca:	90 e0       	ldi	r25, 0x00	; 0
+  cc:	80 7c       	andi	r24, 0xC0	; 192
+  ce:	90 70       	andi	r25, 0x00	; 0
+  d0:	95 95       	asr	r25
+  d2:	87 95       	ror	r24
+  d4:	95 95       	asr	r25
+  d6:	87 95       	ror	r24
+  d8:	28 2b       	or	r18, r24
+  da:	28 bb       	out	0x18, r18	; 24
+}
+  dc:	08 95       	ret
+
+000000de <debug>:
+void debug()
+{
+	PORTB |= _BV(PB5);
+  de:	c5 9a       	sbi	0x18, 5	; 24
+	PORTB |= _BV(PB4);
+  e0:	c4 9a       	sbi	0x18, 4	; 24
+  e2:	88 e8       	ldi	r24, 0x88	; 136
+  e4:	93 e1       	ldi	r25, 0x13	; 19
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+  e6:	28 ec       	ldi	r18, 0xC8	; 200
+  e8:	30 e0       	ldi	r19, 0x00	; 0
+  ea:	f9 01       	movw	r30, r18
+  ec:	31 97       	sbiw	r30, 0x01	; 1
+  ee:	f1 f7       	brne	.-4      	; 0xec <debug+0xe>
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+  f0:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+  f2:	d9 f7       	brne	.-10     	; 0xea <debug+0xc>
+	_delay_ms(500);
+	PORTB=0x00;
+  f4:	18 ba       	out	0x18, r1	; 24
+}
+  f6:	08 95       	ret
+
+000000f8 <calibrate16>:
+{
+	//up right corner = 27,45 (a,b)
+	//up left corner = 27,39
+	//down right = 32,39
+	//down left = 32,45
+	OCR1A = 27;	//up down (greater ocr = lower angle)
+  f8:	8b e1       	ldi	r24, 0x1B	; 27
+  fa:	90 e0       	ldi	r25, 0x00	; 0
+  fc:	9b bd       	out	0x2b, r25	; 43
+  fe:	8a bd       	out	0x2a, r24	; 42
+	OCR1B = 45;	//left right (greater ocr = right)
+ 100:	8d e2       	ldi	r24, 0x2D	; 45
+ 102:	90 e0       	ldi	r25, 0x00	; 0
+ 104:	99 bd       	out	0x29, r25	; 41
+ 106:	88 bd       	out	0x28, r24	; 40
+ 108:	40 e0       	ldi	r20, 0x00	; 0
+ 10a:	50 e0       	ldi	r21, 0x00	; 0
+ 10c:	68 ec       	ldi	r22, 0xC8	; 200
+ 10e:	70 e0       	ldi	r23, 0x00	; 0
+	for(int i=0; i<4; i++)
+	{
+		OCR1B=OCR1B-4;
+ 110:	88 b5       	in	r24, 0x28	; 40
+ 112:	99 b5       	in	r25, 0x29	; 41
+ 114:	04 97       	sbiw	r24, 0x04	; 4
+ 116:	99 bd       	out	0x29, r25	; 41
+ 118:	88 bd       	out	0x28, r24	; 40
+		OCR1A++;
+ 11a:	8a b5       	in	r24, 0x2a	; 42
+ 11c:	9b b5       	in	r25, 0x2b	; 43
+ 11e:	01 96       	adiw	r24, 0x01	; 1
+ 120:	9b bd       	out	0x2b, r25	; 43
+ 122:	8a bd       	out	0x2a, r24	; 42
+ 124:	20 e0       	ldi	r18, 0x00	; 0
+ 126:	30 e0       	ldi	r19, 0x00	; 0
+		for(int j=0; j<4; j++)
+		{
+			OCR1B++;
+ 128:	88 b5       	in	r24, 0x28	; 40
+ 12a:	99 b5       	in	r25, 0x29	; 41
+ 12c:	01 96       	adiw	r24, 0x01	; 1
+ 12e:	99 bd       	out	0x29, r25	; 41
+ 130:	88 bd       	out	0x28, r24	; 40
+ 132:	8c e4       	ldi	r24, 0x4C	; 76
+ 134:	9d e1       	ldi	r25, 0x1D	; 29
+ 136:	fb 01       	movw	r30, r22
+ 138:	31 97       	sbiw	r30, 0x01	; 1
+ 13a:	f1 f7       	brne	.-4      	; 0x138 <calibrate16+0x40>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 13c:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 13e:	d9 f7       	brne	.-10     	; 0x136 <calibrate16+0x3e>
+	OCR1B = 45;	//left right (greater ocr = right)
+	for(int i=0; i<4; i++)
+	{
+		OCR1B=OCR1B-4;
+		OCR1A++;
+		for(int j=0; j<4; j++)
+ 140:	2f 5f       	subi	r18, 0xFF	; 255
+ 142:	3f 4f       	sbci	r19, 0xFF	; 255
+ 144:	24 30       	cpi	r18, 0x04	; 4
+ 146:	31 05       	cpc	r19, r1
+ 148:	79 f7       	brne	.-34     	; 0x128 <calibrate16+0x30>
+	//up left corner = 27,39
+	//down right = 32,39
+	//down left = 32,45
+	OCR1A = 27;	//up down (greater ocr = lower angle)
+	OCR1B = 45;	//left right (greater ocr = right)
+	for(int i=0; i<4; i++)
+ 14a:	4f 5f       	subi	r20, 0xFF	; 255
+ 14c:	5f 4f       	sbci	r21, 0xFF	; 255
+ 14e:	44 30       	cpi	r20, 0x04	; 4
+ 150:	51 05       	cpc	r21, r1
+ 152:	f1 f6       	brne	.-68     	; 0x110 <calibrate16+0x18>
+		{
+			OCR1B++;
+			_delay_ms(750);
+		}
+	}
+}
+ 154:	08 95       	ret
+
+00000156 <testMaxA>:
+
+void testMaxA(int min, int max)
+{
+ 156:	ac 01       	movw	r20, r24
+ 158:	20 e1       	ldi	r18, 0x10	; 16
+ 15a:	37 e2       	ldi	r19, 0x27	; 39
+ 15c:	08 c0       	rjmp	.+16     	; 0x16e <testMaxA+0x18>
+	while(OCR1A<max)
+	{
+		OCR1A+=10;
+ 15e:	8a b5       	in	r24, 0x2a	; 42
+ 160:	9b b5       	in	r25, 0x2b	; 43
+ 162:	0a 96       	adiw	r24, 0x0a	; 10
+ 164:	9b bd       	out	0x2b, r25	; 43
+ 166:	8a bd       	out	0x2a, r24	; 42
+ 168:	c9 01       	movw	r24, r18
+ 16a:	01 97       	sbiw	r24, 0x01	; 1
+ 16c:	f1 f7       	brne	.-4      	; 0x16a <testMaxA+0x14>
+	}
+}
+
+void testMaxA(int min, int max)
+{
+	while(OCR1A<max)
+ 16e:	8a b5       	in	r24, 0x2a	; 42
+ 170:	9b b5       	in	r25, 0x2b	; 43
+ 172:	86 17       	cp	r24, r22
+ 174:	97 07       	cpc	r25, r23
+ 176:	98 f3       	brcs	.-26     	; 0x15e <testMaxA+0x8>
+ 178:	09 c0       	rjmp	.+18     	; 0x18c <testMaxA+0x36>
+		OCR1A+=10;
+		_delay_ms(5);
+	}
+	while(OCR1A>min)
+	{
+		OCR1A-=10;
+ 17a:	8a b5       	in	r24, 0x2a	; 42
+ 17c:	9b b5       	in	r25, 0x2b	; 43
+ 17e:	0a 97       	sbiw	r24, 0x0a	; 10
+ 180:	9b bd       	out	0x2b, r25	; 43
+ 182:	8a bd       	out	0x2a, r24	; 42
+ 184:	c9 01       	movw	r24, r18
+ 186:	01 97       	sbiw	r24, 0x01	; 1
+ 188:	f1 f7       	brne	.-4      	; 0x186 <testMaxA+0x30>
+ 18a:	02 c0       	rjmp	.+4      	; 0x190 <testMaxA+0x3a>
+ 18c:	20 e1       	ldi	r18, 0x10	; 16
+ 18e:	37 e2       	ldi	r19, 0x27	; 39
+	while(OCR1A<max)
+	{
+		OCR1A+=10;
+		_delay_ms(5);
+	}
+	while(OCR1A>min)
+ 190:	8a b5       	in	r24, 0x2a	; 42
+ 192:	9b b5       	in	r25, 0x2b	; 43
+ 194:	48 17       	cp	r20, r24
+ 196:	59 07       	cpc	r21, r25
+ 198:	80 f3       	brcs	.-32     	; 0x17a <testMaxA+0x24>
+	{
+		OCR1A-=10;
+		_delay_ms(5);
+	}
+}
+ 19a:	08 95       	ret
+
+0000019c <testMaxB>:
+
+void testMaxB(int min, int max)
+{
+ 19c:	ac 01       	movw	r20, r24
+ 19e:	20 e1       	ldi	r18, 0x10	; 16
+ 1a0:	37 e2       	ldi	r19, 0x27	; 39
+ 1a2:	08 c0       	rjmp	.+16     	; 0x1b4 <testMaxB+0x18>
+	while(OCR1B<max)
+	{
+		OCR1B+=10;
+ 1a4:	88 b5       	in	r24, 0x28	; 40
+ 1a6:	99 b5       	in	r25, 0x29	; 41
+ 1a8:	0a 96       	adiw	r24, 0x0a	; 10
+ 1aa:	99 bd       	out	0x29, r25	; 41
+ 1ac:	88 bd       	out	0x28, r24	; 40
+ 1ae:	c9 01       	movw	r24, r18
+ 1b0:	01 97       	sbiw	r24, 0x01	; 1
+ 1b2:	f1 f7       	brne	.-4      	; 0x1b0 <testMaxB+0x14>
+	}
+}
+
+void testMaxB(int min, int max)
+{
+	while(OCR1B<max)
+ 1b4:	88 b5       	in	r24, 0x28	; 40
+ 1b6:	99 b5       	in	r25, 0x29	; 41
+ 1b8:	86 17       	cp	r24, r22
+ 1ba:	97 07       	cpc	r25, r23
+ 1bc:	98 f3       	brcs	.-26     	; 0x1a4 <testMaxB+0x8>
+ 1be:	09 c0       	rjmp	.+18     	; 0x1d2 <testMaxB+0x36>
+		OCR1B+=10;
+		_delay_ms(5);
+	}
+	while(OCR1B>min)
+	{
+		OCR1B-=10;
+ 1c0:	88 b5       	in	r24, 0x28	; 40
+ 1c2:	99 b5       	in	r25, 0x29	; 41
+ 1c4:	0a 97       	sbiw	r24, 0x0a	; 10
+ 1c6:	99 bd       	out	0x29, r25	; 41
+ 1c8:	88 bd       	out	0x28, r24	; 40
+ 1ca:	c9 01       	movw	r24, r18
+ 1cc:	01 97       	sbiw	r24, 0x01	; 1
+ 1ce:	f1 f7       	brne	.-4      	; 0x1cc <testMaxB+0x30>
+ 1d0:	02 c0       	rjmp	.+4      	; 0x1d6 <testMaxB+0x3a>
+ 1d2:	20 e1       	ldi	r18, 0x10	; 16
+ 1d4:	37 e2       	ldi	r19, 0x27	; 39
+	while(OCR1B<max)
+	{
+		OCR1B+=10;
+		_delay_ms(5);
+	}
+	while(OCR1B>min)
+ 1d6:	88 b5       	in	r24, 0x28	; 40
+ 1d8:	99 b5       	in	r25, 0x29	; 41
+ 1da:	48 17       	cp	r20, r24
+ 1dc:	59 07       	cpc	r21, r25
+ 1de:	80 f3       	brcs	.-32     	; 0x1c0 <testMaxB+0x24>
+	{
+		OCR1B-=10;
+		_delay_ms(5);
+	}	
+}
+ 1e0:	08 95       	ret
+
+000001e2 <setLaser>:
+//Interrupt Handler
+void setLaser()
+{
+	TCCR0 = 0b00000100;
+ 1e2:	84 e0       	ldi	r24, 0x04	; 4
+ 1e4:	83 bf       	out	0x33, r24	; 51
+	TCNT0 = 0x00;
+ 1e6:	12 be       	out	0x32, r1	; 50
+	TIMSK = 0x01;
+ 1e8:	81 e0       	ldi	r24, 0x01	; 1
+ 1ea:	89 bf       	out	0x39, r24	; 57
+	sei();
+ 1ec:	78 94       	sei
+}
+ 1ee:	08 95       	ret
+
+000001f0 <__vector_9>:
+
+volatile int count=0;
+
+ISR(TIMER0_OVF_vect)
+{
+ 1f0:	1f 92       	push	r1
+ 1f2:	0f 92       	push	r0
+ 1f4:	0f b6       	in	r0, 0x3f	; 63
+ 1f6:	0f 92       	push	r0
+ 1f8:	11 24       	eor	r1, r1
+ 1fa:	2f 93       	push	r18
+ 1fc:	8f 93       	push	r24
+ 1fe:	9f 93       	push	r25
+			PORTB |= _BV(PB3);	//turn on laser
+			laserState=1;
+		}
+	*/
+	
+	count++;
+ 200:	80 91 60 00 	lds	r24, 0x0060
+ 204:	90 91 61 00 	lds	r25, 0x0061
+ 208:	01 96       	adiw	r24, 0x01	; 1
+ 20a:	90 93 61 00 	sts	0x0061, r25
+ 20e:	80 93 60 00 	sts	0x0060, r24
+	if(count==1000)
+ 212:	80 91 60 00 	lds	r24, 0x0060
+ 216:	90 91 61 00 	lds	r25, 0x0061
+ 21a:	88 5e       	subi	r24, 0xE8	; 232
+ 21c:	93 40       	sbci	r25, 0x03	; 3
+ 21e:	29 f4       	brne	.+10     	; 0x22a <__vector_9+0x3a>
+	{
+		if(laserState)
+		{
+			PORTB &= ~_BV(PB3);	//turn off laser
+ 220:	c3 98       	cbi	0x18, 3	; 24
+			count=0;
+ 222:	10 92 61 00 	sts	0x0061, r1
+ 226:	10 92 60 00 	sts	0x0060, r1
+			count=0;
+			laserState=1;
+		}
+	}
+	
+}
+ 22a:	9f 91       	pop	r25
+ 22c:	8f 91       	pop	r24
+ 22e:	2f 91       	pop	r18
+ 230:	0f 90       	pop	r0
+ 232:	0f be       	out	0x3f, r0	; 63
+ 234:	0f 90       	pop	r0
+ 236:	1f 90       	pop	r1
+ 238:	18 95       	reti
+
+0000023a <read_from_internal_eeprom>:
+static u16 A8=0x0DB6;
+static u16 B8=0x1342;
+
+unsigned char read_from_internal_eeprom(unsigned int addr) 
+  { 
+   while (EECR & (1<<EEWE)); //wait for write to finish 
+ 23a:	e1 99       	sbic	0x1c, 1	; 28
+ 23c:	fe cf       	rjmp	.-4      	; 0x23a <read_from_internal_eeprom>
+   EEAR = addr; //load the address to read from 
+ 23e:	9f bb       	out	0x1f, r25	; 31
+ 240:	8e bb       	out	0x1e, r24	; 30
+   EECR |= (1<<EERE);//set the read flag 
+ 242:	e0 9a       	sbi	0x1c, 0	; 28
+   //the clock is stopped for 4 cyles 
+   EEAR =0; //leave address at 0 so if power down corrupts location 0 
+ 244:	1f ba       	out	0x1f, r1	; 31
+ 246:	1e ba       	out	0x1e, r1	; 30
+   return  EEDR; 
+ 248:	8d b3       	in	r24, 0x1d	; 29
+  } 
+ 24a:	08 95       	ret
+
+0000024c <write_internal_eeprom>:
+  
+unsigned char write_internal_eeprom(unsigned int addr,char data) 
+ { 
+ 24c:	0f 93       	push	r16
+ 24e:	1f 93       	push	r17
+ 250:	cf 93       	push	r28
+ 252:	df 93       	push	r29
+ 254:	ec 01       	movw	r28, r24
+ 256:	06 2f       	mov	r16, r22
+ 258:	10 e0       	ldi	r17, 0x00	; 0
+  char cnt; 
+  for(cnt=0;cnt<10;cnt++) 
+     { 
+      if(data==(read_from_internal_eeprom(addr))) //will check in the read routine for write flag being cleared 
+ 25a:	ce 01       	movw	r24, r28
+ 25c:	ee df       	rcall	.-36     	; 0x23a <read_from_internal_eeprom>
+ 25e:	08 17       	cp	r16, r24
+ 260:	41 f0       	breq	.+16     	; 0x272 <write_internal_eeprom+0x26>
+         break; 
+      EEAR = addr;//load up address 
+ 262:	df bb       	out	0x1f, r29	; 31
+ 264:	ce bb       	out	0x1e, r28	; 30
+      EEDR = data; //load up data 
+ 266:	0d bb       	out	0x1d, r16	; 29
+      EECR |= (1<<EEMWE); //enable write 
+ 268:	e2 9a       	sbi	0x1c, 2	; 28
+      EECR |= (1<<EEWE); //start write 
+ 26a:	e1 9a       	sbi	0x1c, 1	; 28
+  } 
+  
+unsigned char write_internal_eeprom(unsigned int addr,char data) 
+ { 
+  char cnt; 
+  for(cnt=0;cnt<10;cnt++) 
+ 26c:	1f 5f       	subi	r17, 0xFF	; 255
+ 26e:	1a 30       	cpi	r17, 0x0A	; 10
+ 270:	a1 f7       	brne	.-24     	; 0x25a <write_internal_eeprom+0xe>
+      EEDR = data; //load up data 
+      EECR |= (1<<EEMWE); //enable write 
+      EECR |= (1<<EEWE); //start write 
+     } 
+    return cnt; 
+  } 
+ 272:	81 2f       	mov	r24, r17
+ 274:	df 91       	pop	r29
+ 276:	cf 91       	pop	r28
+ 278:	1f 91       	pop	r17
+ 27a:	0f 91       	pop	r16
+ 27c:	08 95       	ret
+
+0000027e <record>:
+
+void record()
+{
+   write_internal_eeprom(counter, OCR1AH);
+ 27e:	80 91 63 00 	lds	r24, 0x0063
+ 282:	90 91 64 00 	lds	r25, 0x0064
+ 286:	6b b5       	in	r22, 0x2b	; 43
+ 288:	e1 df       	rcall	.-62     	; 0x24c <write_internal_eeprom>
+   write_internal_eeprom(counter+1, OCR1AL);
+ 28a:	80 91 63 00 	lds	r24, 0x0063
+ 28e:	90 91 64 00 	lds	r25, 0x0064
+ 292:	6a b5       	in	r22, 0x2a	; 42
+ 294:	01 96       	adiw	r24, 0x01	; 1
+ 296:	da df       	rcall	.-76     	; 0x24c <write_internal_eeprom>
+   write_internal_eeprom(counter+2, 0x00);
+ 298:	80 91 63 00 	lds	r24, 0x0063
+ 29c:	90 91 64 00 	lds	r25, 0x0064
+ 2a0:	02 96       	adiw	r24, 0x02	; 2
+ 2a2:	60 e0       	ldi	r22, 0x00	; 0
+ 2a4:	d3 df       	rcall	.-90     	; 0x24c <write_internal_eeprom>
+   write_internal_eeprom(counter+3, OCR1BH);
+ 2a6:	80 91 63 00 	lds	r24, 0x0063
+ 2aa:	90 91 64 00 	lds	r25, 0x0064
+ 2ae:	69 b5       	in	r22, 0x29	; 41
+ 2b0:	03 96       	adiw	r24, 0x03	; 3
+ 2b2:	cc df       	rcall	.-104    	; 0x24c <write_internal_eeprom>
+   write_internal_eeprom(counter+4, OCR1BL);
+ 2b4:	80 91 63 00 	lds	r24, 0x0063
+ 2b8:	90 91 64 00 	lds	r25, 0x0064
+ 2bc:	68 b5       	in	r22, 0x28	; 40
+ 2be:	04 96       	adiw	r24, 0x04	; 4
+ 2c0:	c5 df       	rcall	.-118    	; 0x24c <write_internal_eeprom>
+   counter+=32;
+ 2c2:	80 91 63 00 	lds	r24, 0x0063
+ 2c6:	90 91 64 00 	lds	r25, 0x0064
+ 2ca:	80 96       	adiw	r24, 0x20	; 32
+ 2cc:	90 93 64 00 	sts	0x0064, r25
+ 2d0:	80 93 63 00 	sts	0x0063, r24
+}
+ 2d4:	08 95       	ret
+
+000002d6 <calibrateAll>:
+	//Calibration ALL 8 targets
+	//setLaser();
+	u16 flexA = 30;		//up down (higher = negative angle)
+	u16 flexB = 00;		//right left (higher = right)
+
+	OCR1A=A1+flexA;
+ 2d6:	80 e3       	ldi	r24, 0x30	; 48
+ 2d8:	9c e0       	ldi	r25, 0x0C	; 12
+ 2da:	9b bd       	out	0x2b, r25	; 43
+ 2dc:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B1+flexB;
+ 2de:	8e e9       	ldi	r24, 0x9E	; 158
+ 2e0:	91 e1       	ldi	r25, 0x11	; 17
+ 2e2:	99 bd       	out	0x29, r25	; 41
+ 2e4:	88 bd       	out	0x28, r24	; 40
+ 2e6:	80 ea       	ldi	r24, 0xA0	; 160
+ 2e8:	9f e0       	ldi	r25, 0x0F	; 15
+ 2ea:	28 ec       	ldi	r18, 0xC8	; 200
+ 2ec:	30 e0       	ldi	r19, 0x00	; 0
+ 2ee:	f9 01       	movw	r30, r18
+ 2f0:	31 97       	sbiw	r30, 0x01	; 1
+ 2f2:	f1 f7       	brne	.-4      	; 0x2f0 <calibrateAll+0x1a>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 2f4:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 2f6:	d9 f7       	brne	.-10     	; 0x2ee <calibrateAll+0x18>
+	_delay_ms(400);
+	OCR1A=A2+flexA;
+ 2f8:	80 e3       	ldi	r24, 0x30	; 48
+ 2fa:	9c e0       	ldi	r25, 0x0C	; 12
+ 2fc:	9b bd       	out	0x2b, r25	; 43
+ 2fe:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B2+flexB;
+ 300:	84 e2       	ldi	r24, 0x24	; 36
+ 302:	93 e1       	ldi	r25, 0x13	; 19
+ 304:	99 bd       	out	0x29, r25	; 41
+ 306:	88 bd       	out	0x28, r24	; 40
+ 308:	80 ea       	ldi	r24, 0xA0	; 160
+ 30a:	9f e0       	ldi	r25, 0x0F	; 15
+ 30c:	28 ec       	ldi	r18, 0xC8	; 200
+ 30e:	30 e0       	ldi	r19, 0x00	; 0
+ 310:	f9 01       	movw	r30, r18
+ 312:	31 97       	sbiw	r30, 0x01	; 1
+ 314:	f1 f7       	brne	.-4      	; 0x312 <calibrateAll+0x3c>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 316:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 318:	d9 f7       	brne	.-10     	; 0x310 <calibrateAll+0x3a>
+	_delay_ms(400);
+	OCR1A=A3+flexA;
+ 31a:	88 ea       	ldi	r24, 0xA8	; 168
+ 31c:	9c e0       	ldi	r25, 0x0C	; 12
+ 31e:	9b bd       	out	0x2b, r25	; 43
+ 320:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B3+flexB;
+ 322:	84 e3       	ldi	r24, 0x34	; 52
+ 324:	92 e1       	ldi	r25, 0x12	; 18
+ 326:	99 bd       	out	0x29, r25	; 41
+ 328:	88 bd       	out	0x28, r24	; 40
+ 32a:	80 ea       	ldi	r24, 0xA0	; 160
+ 32c:	9f e0       	ldi	r25, 0x0F	; 15
+ 32e:	28 ec       	ldi	r18, 0xC8	; 200
+ 330:	30 e0       	ldi	r19, 0x00	; 0
+ 332:	f9 01       	movw	r30, r18
+ 334:	31 97       	sbiw	r30, 0x01	; 1
+ 336:	f1 f7       	brne	.-4      	; 0x334 <calibrateAll+0x5e>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 338:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 33a:	d9 f7       	brne	.-10     	; 0x332 <calibrateAll+0x5c>
+	_delay_ms(400);
+	OCR1A=A4+flexA;
+ 33c:	88 ea       	ldi	r24, 0xA8	; 168
+ 33e:	9c e0       	ldi	r25, 0x0C	; 12
+ 340:	9b bd       	out	0x2b, r25	; 43
+ 342:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B4+flexB;
+ 344:	8c ea       	ldi	r24, 0xAC	; 172
+ 346:	92 e1       	ldi	r25, 0x12	; 18
+ 348:	99 bd       	out	0x29, r25	; 41
+ 34a:	88 bd       	out	0x28, r24	; 40
+ 34c:	80 ea       	ldi	r24, 0xA0	; 160
+ 34e:	9f e0       	ldi	r25, 0x0F	; 15
+ 350:	28 ec       	ldi	r18, 0xC8	; 200
+ 352:	30 e0       	ldi	r19, 0x00	; 0
+ 354:	f9 01       	movw	r30, r18
+ 356:	31 97       	sbiw	r30, 0x01	; 1
+ 358:	f1 f7       	brne	.-4      	; 0x356 <calibrateAll+0x80>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 35a:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 35c:	d9 f7       	brne	.-10     	; 0x354 <calibrateAll+0x7e>
+	_delay_ms(400);
+	OCR1A=A5+flexA;
+ 35e:	8e e3       	ldi	r24, 0x3E	; 62
+ 360:	9d e0       	ldi	r25, 0x0D	; 13
+ 362:	9b bd       	out	0x2b, r25	; 43
+ 364:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B5+flexB;
+ 366:	84 e3       	ldi	r24, 0x34	; 52
+ 368:	92 e1       	ldi	r25, 0x12	; 18
+ 36a:	99 bd       	out	0x29, r25	; 41
+ 36c:	88 bd       	out	0x28, r24	; 40
+ 36e:	80 ea       	ldi	r24, 0xA0	; 160
+ 370:	9f e0       	ldi	r25, 0x0F	; 15
+ 372:	28 ec       	ldi	r18, 0xC8	; 200
+ 374:	30 e0       	ldi	r19, 0x00	; 0
+ 376:	f9 01       	movw	r30, r18
+ 378:	31 97       	sbiw	r30, 0x01	; 1
+ 37a:	f1 f7       	brne	.-4      	; 0x378 <calibrateAll+0xa2>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 37c:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 37e:	d9 f7       	brne	.-10     	; 0x376 <calibrateAll+0xa0>
+	_delay_ms(400);
+	OCR1A=A6+flexA;
+ 380:	8e e3       	ldi	r24, 0x3E	; 62
+ 382:	9d e0       	ldi	r25, 0x0D	; 13
+ 384:	9b bd       	out	0x2b, r25	; 43
+ 386:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B6+flexB;
+ 388:	8c ea       	ldi	r24, 0xAC	; 172
+ 38a:	92 e1       	ldi	r25, 0x12	; 18
+ 38c:	99 bd       	out	0x29, r25	; 41
+ 38e:	88 bd       	out	0x28, r24	; 40
+ 390:	80 ea       	ldi	r24, 0xA0	; 160
+ 392:	9f e0       	ldi	r25, 0x0F	; 15
+ 394:	28 ec       	ldi	r18, 0xC8	; 200
+ 396:	30 e0       	ldi	r19, 0x00	; 0
+ 398:	f9 01       	movw	r30, r18
+ 39a:	31 97       	sbiw	r30, 0x01	; 1
+ 39c:	f1 f7       	brne	.-4      	; 0x39a <calibrateAll+0xc4>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 39e:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 3a0:	d9 f7       	brne	.-10     	; 0x398 <calibrateAll+0xc2>
+	_delay_ms(400);
+	OCR1A=A7+flexA;
+ 3a2:	86 eb       	ldi	r24, 0xB6	; 182
+ 3a4:	9d e0       	ldi	r25, 0x0D	; 13
+ 3a6:	9b bd       	out	0x2b, r25	; 43
+ 3a8:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B7+flexB;
+ 3aa:	8e e9       	ldi	r24, 0x9E	; 158
+ 3ac:	91 e1       	ldi	r25, 0x11	; 17
+ 3ae:	99 bd       	out	0x29, r25	; 41
+ 3b0:	88 bd       	out	0x28, r24	; 40
+ 3b2:	80 ea       	ldi	r24, 0xA0	; 160
+ 3b4:	9f e0       	ldi	r25, 0x0F	; 15
+ 3b6:	28 ec       	ldi	r18, 0xC8	; 200
+ 3b8:	30 e0       	ldi	r19, 0x00	; 0
+ 3ba:	f9 01       	movw	r30, r18
+ 3bc:	31 97       	sbiw	r30, 0x01	; 1
+ 3be:	f1 f7       	brne	.-4      	; 0x3bc <calibrateAll+0xe6>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 3c0:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 3c2:	d9 f7       	brne	.-10     	; 0x3ba <calibrateAll+0xe4>
+	_delay_ms(400);
+	OCR1A=A8+flexA;
+ 3c4:	84 ed       	ldi	r24, 0xD4	; 212
+ 3c6:	9d e0       	ldi	r25, 0x0D	; 13
+ 3c8:	9b bd       	out	0x2b, r25	; 43
+ 3ca:	8a bd       	out	0x2a, r24	; 42
+	OCR1B=B8+flexB;
+ 3cc:	82 e4       	ldi	r24, 0x42	; 66
+ 3ce:	93 e1       	ldi	r25, 0x13	; 19
+ 3d0:	99 bd       	out	0x29, r25	; 41
+ 3d2:	88 bd       	out	0x28, r24	; 40
+ 3d4:	80 ea       	ldi	r24, 0xA0	; 160
+ 3d6:	9f e0       	ldi	r25, 0x0F	; 15
+ 3d8:	28 ec       	ldi	r18, 0xC8	; 200
+ 3da:	30 e0       	ldi	r19, 0x00	; 0
+ 3dc:	f9 01       	movw	r30, r18
+ 3de:	31 97       	sbiw	r30, 0x01	; 1
+ 3e0:	f1 f7       	brne	.-4      	; 0x3de <calibrateAll+0x108>
+		{
+			// wait 1/10 ms
+			_delay_loop_2(((F_CPU) / 4e3) / 10);
+			__ticks --;
+ 3e2:	01 97       	sbiw	r24, 0x01	; 1
+		__ticks = 1;
+	else if (__tmp > 65535)
+	{
+		//	__ticks = requested delay in 1/10 ms
+		__ticks = (uint16_t) (__ms * 10.0);
+		while(__ticks)
+ 3e4:	d9 f7       	brne	.-10     	; 0x3dc <calibrateAll+0x106>
+	_delay_ms(400);
+}
+ 3e6:	08 95       	ret
+
+000003e8 <main>:
+
+//Main Program
+int main (void) 
+{
+ 3e8:	af 92       	push	r10
+ 3ea:	bf 92       	push	r11
+ 3ec:	cf 92       	push	r12
+ 3ee:	df 92       	push	r13
+ 3f0:	ef 92       	push	r14
+ 3f2:	ff 92       	push	r15
+ 3f4:	0f 93       	push	r16
+ 3f6:	1f 93       	push	r17
+ 3f8:	cf 93       	push	r28
+ 3fa:	df 93       	push	r29
+	//set pins
+	DDRB=0xFF;
+ 3fc:	8f ef       	ldi	r24, 0xFF	; 255
+ 3fe:	87 bb       	out	0x17, r24	; 23
+	DDRC=0b00111111;
+ 400:	8f e3       	ldi	r24, 0x3F	; 63
+ 402:	84 bb       	out	0x14, r24	; 20
+	DDRD=0x00;	
+ 404:	11 ba       	out	0x11, r1	; 17
+
+	setPWM(minA,minB);
+ 406:	88 eb       	ldi	r24, 0xB8	; 184
+ 408:	9b e0       	ldi	r25, 0x0B	; 11
+ 40a:	6c ec       	ldi	r22, 0xCC	; 204
+ 40c:	70 e1       	ldi	r23, 0x10	; 16
+ 40e:	1c de       	rcall	.-968    	; 0x48 <setPWM>
+ 410:	60 e6       	ldi	r22, 0x60	; 96
+ 412:	a6 2e       	mov	r10, r22
+ 414:	6a ee       	ldi	r22, 0xEA	; 234
+ 416:	b6 2e       	mov	r11, r22
+void checkOCRa(int min, int max)
+{
+	if(OCR1A>max)
+		OCR1A=max;
+	else if(OCR1A<min)
+		OCR1A=min;
+ 418:	58 eb       	ldi	r21, 0xB8	; 184
+ 41a:	c5 2e       	mov	r12, r21
+ 41c:	5b e0       	ldi	r21, 0x0B	; 11
+ 41e:	d5 2e       	mov	r13, r21
+
+
+void checkOCRa(int min, int max)
+{
+	if(OCR1A>max)
+		OCR1A=max;
+ 420:	48 ed       	ldi	r20, 0xD8	; 216
+ 422:	e4 2e       	mov	r14, r20
+ 424:	4e e0       	ldi	r20, 0x0E	; 14
+ 426:	f4 2e       	mov	r15, r20
+void checkOCRb(int min, int max)
+{
+	if(OCR1B>max)
+		OCR1B=max;
+	else if(OCR1B<min)
+		OCR1B=min;
+ 428:	0c ec       	ldi	r16, 0xCC	; 204
+ 42a:	10 e1       	ldi	r17, 0x10	; 16
+}
+
+void checkOCRb(int min, int max)
+{
+	if(OCR1B>max)
+		OCR1B=max;
+ 42c:	c8 e8       	ldi	r28, 0x88	; 136
+ 42e:	d3 e1       	ldi	r29, 0x13	; 19
+ 430:	01 c0       	rjmp	.+2      	; 0x434 <main+0x4c>
+
+	while(1)
+	{
+		while(!(PIND & (1<<PD5)))
+		{
+			calibrateAll();
+ 432:	51 df       	rcall	.-350    	; 0x2d6 <calibrateAll>
+	}
+	*/
+
+	while(1)
+	{
+		while(!(PIND & (1<<PD5)))
+ 434:	85 9b       	sbis	0x10, 5	; 16
+ 436:	fd cf       	rjmp	.-6      	; 0x432 <main+0x4a>
+		{
+			calibrateAll();
+		}
+		while(!(PIND & (1<<PD6)))
+ 438:	86 9b       	sbis	0x10, 6	; 16
+ 43a:	fe cf       	rjmp	.-4      	; 0x438 <main+0x50>
+		{
+
+		}
+		while(!(PIND & (1<<PD7)))
+ 43c:	87 9b       	sbis	0x10, 7	; 16
+ 43e:	fe cf       	rjmp	.-4      	; 0x43c <main+0x54>
+		{
+
+		}
+			
+		//Acticate Laser
+		if(!(PIND & (1<<PD4)))
+ 440:	84 99       	sbic	0x10, 4	; 16
+ 442:	02 c0       	rjmp	.+4      	; 0x448 <main+0x60>
+		{	
+
+			PORTB |= _BV(PB3);
+ 444:	c3 9a       	sbi	0x18, 3	; 24
+ 446:	01 c0       	rjmp	.+2      	; 0x44a <main+0x62>
+			}
+			*/
+		}
+		else
+		{	
+			PORTB &= ~_BV(PB3);
+ 448:	c3 98       	cbi	0x18, 3	; 24
+			//laserFlag = 0;
+		}
+
+		//Set Servo 1
+		if(!(PIND & (1<<PD0)))
+ 44a:	80 99       	sbic	0x10, 0	; 16
+ 44c:	04 c0       	rjmp	.+8      	; 0x456 <main+0x6e>
+		{
+			OCR1B+=tiltAmount;
+ 44e:	88 b5       	in	r24, 0x28	; 40
+ 450:	99 b5       	in	r25, 0x29	; 41
+ 452:	4e 96       	adiw	r24, 0x1e	; 30
+ 454:	05 c0       	rjmp	.+10     	; 0x460 <__stack+0x1>
+			checkOCRb(minB, maxB);
+		}
+		else if(!(PIND & (1<<PD1)))
+ 456:	81 99       	sbic	0x10, 1	; 16
+ 458:	14 c0       	rjmp	.+40     	; 0x482 <__stack+0x23>
+		{
+			OCR1B-=tiltAmount;
+ 45a:	88 b5       	in	r24, 0x28	; 40
+ 45c:	99 b5       	in	r25, 0x29	; 41
+ 45e:	4e 97       	sbiw	r24, 0x1e	; 30
+ 460:	99 bd       	out	0x29, r25	; 41
+ 462:	88 bd       	out	0x28, r24	; 40
+	//outputOCR(OCR1A);
+}
+
+void checkOCRb(int min, int max)
+{
+	if(OCR1B>max)
+ 464:	88 b5       	in	r24, 0x28	; 40
+ 466:	99 b5       	in	r25, 0x29	; 41
+ 468:	89 58       	subi	r24, 0x89	; 137
+ 46a:	93 41       	sbci	r25, 0x13	; 19
+ 46c:	18 f0       	brcs	.+6      	; 0x474 <__stack+0x15>
+		OCR1B=max;
+ 46e:	d9 bd       	out	0x29, r29	; 41
+ 470:	c8 bd       	out	0x28, r28	; 40
+ 472:	07 c0       	rjmp	.+14     	; 0x482 <__stack+0x23>
+	else if(OCR1B<min)
+ 474:	88 b5       	in	r24, 0x28	; 40
+ 476:	99 b5       	in	r25, 0x29	; 41
+ 478:	8c 5c       	subi	r24, 0xCC	; 204
+ 47a:	90 41       	sbci	r25, 0x10	; 16
+ 47c:	10 f4       	brcc	.+4      	; 0x482 <__stack+0x23>
+		OCR1B=min;
+ 47e:	19 bd       	out	0x29, r17	; 41
+ 480:	08 bd       	out	0x28, r16	; 40
+			checkOCRb(minB, maxB);
+		}
+
+		//Set Servo 2
+		if(!(PIND & (1<<PD2)))
+ 482:	82 99       	sbic	0x10, 2	; 16
+ 484:	04 c0       	rjmp	.+8      	; 0x48e <__stack+0x2f>
+		{
+			OCR1A+=tiltAmount;
+ 486:	8a b5       	in	r24, 0x2a	; 42
+ 488:	9b b5       	in	r25, 0x2b	; 43
+ 48a:	4e 96       	adiw	r24, 0x1e	; 30
+ 48c:	05 c0       	rjmp	.+10     	; 0x498 <__stack+0x39>
+			checkOCRa(minA, maxA);
+		}
+		else if(!(PIND & (1<<PD3)))
+ 48e:	83 99       	sbic	0x10, 3	; 16
+ 490:	14 c0       	rjmp	.+40     	; 0x4ba <__stack+0x5b>
+		{
+			OCR1A-=tiltAmount;
+ 492:	8a b5       	in	r24, 0x2a	; 42
+ 494:	9b b5       	in	r25, 0x2b	; 43
+ 496:	4e 97       	sbiw	r24, 0x1e	; 30
+ 498:	9b bd       	out	0x2b, r25	; 43
+ 49a:	8a bd       	out	0x2a, r24	; 42
+}
+
+
+void checkOCRa(int min, int max)
+{
+	if(OCR1A>max)
+ 49c:	8a b5       	in	r24, 0x2a	; 42
+ 49e:	9b b5       	in	r25, 0x2b	; 43
+ 4a0:	89 5d       	subi	r24, 0xD9	; 217
+ 4a2:	9e 40       	sbci	r25, 0x0E	; 14
+ 4a4:	18 f0       	brcs	.+6      	; 0x4ac <__stack+0x4d>
+		OCR1A=max;
+ 4a6:	fb bc       	out	0x2b, r15	; 43
+ 4a8:	ea bc       	out	0x2a, r14	; 42
+ 4aa:	07 c0       	rjmp	.+14     	; 0x4ba <__stack+0x5b>
+	else if(OCR1A<min)
+ 4ac:	8a b5       	in	r24, 0x2a	; 42
+ 4ae:	9b b5       	in	r25, 0x2b	; 43
+ 4b0:	88 5b       	subi	r24, 0xB8	; 184
+ 4b2:	9b 40       	sbci	r25, 0x0B	; 11
+ 4b4:	10 f4       	brcc	.+4      	; 0x4ba <__stack+0x5b>
+		OCR1A=min;
+ 4b6:	db bc       	out	0x2b, r13	; 43
+ 4b8:	ca bc       	out	0x2a, r12	; 42
+ 4ba:	c5 01       	movw	r24, r10
+ 4bc:	01 97       	sbiw	r24, 0x01	; 1
+ 4be:	f1 f7       	brne	.-4      	; 0x4bc <__stack+0x5d>
+			checkOCRa(minA, maxA);
+		}
+
+		_delay_ms(30);
+		PORTB &= ~_BV(PB3);	//turn off laser
+ 4c0:	c3 98       	cbi	0x18, 3	; 24
+ 4c2:	c5 01       	movw	r24, r10
+ 4c4:	01 97       	sbiw	r24, 0x01	; 1
+ 4c6:	f1 f7       	brne	.-4      	; 0x4c4 <__stack+0x65>
+ 4c8:	b5 cf       	rjmp	.-150    	; 0x434 <main+0x4c>
+
+000004ca <_exit>:
+ 4ca:	f8 94       	cli
+
+000004cc <__stop_program>:
+ 4cc:	ff cf       	rjmp	.-2      	; 0x4cc <__stop_program>
